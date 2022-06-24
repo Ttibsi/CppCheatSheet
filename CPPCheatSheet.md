@@ -388,3 +388,183 @@ void even (int x)
 }
 ```
 
+#### Overloaded Functions
+You can have two functions with the same name if they have different return 
+types and parameter types. When calling the function, the compiler will usually
+correctly decide which one to use. It's generally considered good pracice that
+they both have the same behavior, although they don't have to. 
+
+Note that a function cannot be overloaded only by it's return type, at least one
+of the parameters mst have a different type.
+
+#### Function templates
+
+Sometimes you want to do the same thing to the same data with different types 
+(eg a `sum()` function should return the same data type as the numbers put in 
+eg double or int). For this, you can create a template.
+
+Function templates use the syntax `template <class myType>` to create a custom
+type for the purposes of this templating. This `myType` is what the function 
+can return and can be the specified type of parameters as well. Instead of the 
+`class` keyword here, you can also use `typename`, which is slightly more 
+readable and less explicit.
+
+You can also specify the type when calling the function (ex `sum<int>(1,2);`)
+It's standard to call these templates `T`. You can also use these generic 
+types to create variables of those types. 
+
+### Scopes
+* Global - defined outside of any block
+* Block - Any value defined within a single block, such as a function or a loop
+    * These are known as local variables
+
+There cannot be two entities in the same scope with the same name
+
+Custom namespaces
+```cpp
+namespace foo
+{
+    int a, b;
+}
+
+int main()
+{
+    cout << foo::a; // Calling the variables defined within the `foo` namespace
+    cout << foo::b;
+}
+```
+
+You can also have functions defined within namespaces as well, and call them in 
+the same way as above.
+
+The keyword `using` brings the selected namespace into the current one. This is 
+akin to doing `from foo import *` in python. You can also use `using` within a 
+block, such as a function. If you use `using namespace foo` (over `using foo`)
+this will allow you to use features of the foo namespace without specifying that 
+theyre part of foo. 
+
+You can also alias namespaces so they're easier to type (ex `namespace f = foo;`)
+
+### Arrays
+You can't straight up pass an array to a function, although you can pass it's 
+address instead. This has the same effect, but is more efficient/faster. It's 
+basically the same syntax (`void foo (int arg[]) {};`). Sometimes, to handle 
+things like looping through an array, you will also need to pass in it's 
+length as the array created as an arg has an unknown length.
+
+This may be a good use of namespaces and just using arrays within their own NS 
+
+Most of this functionality is inherited from C, and C++ offers it's own 
+`<array>` header that is easier to use. In short, this header allows for arrays 
+to be copied,although that is an expensive operation and they will only decay
+into pointers when told to by the programmer. You can also use `myarray.size()`
+to get the size of the array in a C++ array.
+
+### Character sequences
+You can represnt a string as an array of characters eg `char foo [20];`.
+
+Note that by convention, character arrays tend to end with a `\0` null char
+
+Strings surrounded in double quotes `"` are _String literals_, and they are an 
+array of characters with a null-terminator at the end. 
+
+```cpp
+//initialise
+char word[] = {'H', 'e', 'l', 'l', 'o', '\0'};
+
+// This does the same thing
+char word[] = "Hello";
+```
+
+This is inherited from C, although as before mentioned, C++ offers the `<string>`
+header. Char arrays are also known as `C-strings`
+
+Note that unlike a string type variable, you cannot overwrite a char array in 
+the same way, although you can overwrite individual characters the same way you 
+would usually access elements in an array. They also have a fixed length which 
+is defined at instantiation time, unlike a string, which can have a variable 
+length.
+
+You can turn a string into a char array/C-string using `mystring.c_str()`, or 
+the other way around using `mystring.data`
+
+### pointers
+`&` - Address-of operator
+`*` - dereference operator
+    - When used on the data type of a pointer (see below), this is instead part 
+    of a compound type specifier.
+
+```cpp
+int foo = 12;
+int* bar = &foo; // This is NOT the dereference operator
+cout << &foo;
+cout << bar;
+```
+
+here, `bar` points to the memory address of foo, and doesn't hold the value of 
+foo itself. bar is an `int*` (as opposed to an `int`) because we aren't accessing
+the value, but the location.
+
+The properties of a pointer change based on the data type it is pointing to. 
+once dereferenced, the data type needs to be known. This is the data type that 
+is used to instanciate the pointer - not the data type of the pointer itself. 
+In the above code snippet, it's the reason the `bar` is an int. 
+
+#### Pointers and arrays
+Arrays are basically pointers to a list of data.
+
+Brackets for an array are a type of operator called the `offset operator`. 
+When you define an array, you store the location of item 0 and how many address 
+locations we need. You can access these other locations using pointers by 
+specifying the offset.
+
+If you are pointing to a value with no intention of changing it, you can also 
+specify it as a const (eg `const int* ptr;`). This is useful to pass as a 
+function parameter. 
+
+We can also access string literals using pointers as they are technially also 
+arrays of `const char` (as literals, they can't be modified)
+`const char* foo = "hello";` is valid syntax
+
+You can create pointers that point to other pointers, with another level of 
+asterisk for each level of pointer before you hit actual data.
+
+```cpp
+char a;
+char* b;
+char** c;
+a = 'z';
+b = &a; //points to a
+c = &b; // points to b pointing to a
+```
+
+#### void pointers
+Void pointers are pointers that point to values with no type. This means that 
+they can point to any data type, althugh they cannot be directly dereferenced
+(They can't be `&`ed). Addresses in a void pointer need to be transformed into
+another pointer type first.
+
+These are generally useful for passing generic parameters to a function.
+
+#### Null Pointers
+Basically these are pointers that point to addresses that don't exist/are empty.
+Uninitialised pointers are a good example of this, as they have yet to be told
+where to point. This will only cause an error if you try to dereference it. 
+
+You can also make a pointer explicitly point nowhere (not just an invalid address).
+This is a nullpointer value. (ex `int* foo = nullptr;`) or you can create a pointer
+that points to 0 (ex `int* bar = 0;`). It's also common in older code to see 
+`NULL` used here.
+
+Null pointers and void pointers are different. 
+
+#### Pointers to functions
+This is also allowed, and is most used to pass a function as an argument to 
+another function. 
+See the `basics/pointer_functions.cpp` file for an example of this
+
+### Dynamic memory
+Usually memeory usage is determined by the compiler However there are times the
+memory will only be determined during runtime - ie user Input.
+
+Allocate dynamic memory with the `new` and `new[]` operators. 
