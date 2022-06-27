@@ -756,4 +756,266 @@ my_ec = EyeColour::green;
 ```
 
 ## Classes in C++
+Classes are like an expanded type of struct, except they also contain functions.
+
+Within a class, you can specify the access rights of the attributes and methods 
+that follow them.
+
+```cpp
+class Rect {
+    int w, h;
+
+    public:
+        void set_values(int,int);
+        int area();
+} rect; 
+
+// Creating a method
+void Rect::set_values(int x, int y) {
+    w = x;
+    h = y;
+}
+```
+
+Private members of a class are accessible only from within other members of the
+same class, Protected members are accessible also from within child classes, 
+Public members can be accessed anywhere the object is able to be accessed. By 
+default everything is private.
+
+You can access any members of a class with dot notation (ex `rect.area();`).
+
+Methods with templates in the class are considered `in-line` already. This may 
+cause some slight slowdown at compiler optimisations, but nothing significant.
+
+You can have constructor methods like python's `__init__()` to specify attributes
+when the class is created. These can also be overloaded, just like any other
+method, although creating a class with a default constructor should use no 
+parenthesis.
+
+If a class only has a single parameter in it's constructor, you can create it 
+similarly to creating a new variable (ex 'class_name obj_name = val') and if 
+it has multiple values,you can use braces instead
+
+```cpp
+// Assume the class Circle has only a single attr called radius
+Circle foo (10.0);   // functional form
+Circle bar = 20.0;   // assignment init.
+Circle baz {30.0};   // uniform init.
+Circle qux = {40.0}; // POD-like
+```
+
+Objects can also be pointed to with pointers. They can also be defined with a 
+`struct` or `union` keyword, confusingly. 
+
+You can also overload various operators so that the code knows what to do when 
+you use those operators on two objects.
+
+The `this` keyword can be used as a pointer to the object who's methods are 
+being executed. They're close to the python `self`, but aren't exactly 1:1. 
+
+`static members` are also known as `class variables`. They're attributes that 
+apply at the class level instead of the object level. One example of this 
+could be a class that counts the number of objects that exists. 
+
+```cpp
+// This is an example of a class with a class attribute that increments
+// every time you create a new object
+class Dummy {
+    public:
+        static int n;
+        Dummy() { n++;}
+}
+
+int Dummy::n = 0; // Classattrs need to be initialised outside of the class 
+                // or there'll be a new instance with each object. 
+```
+
+You can also use the `static` keyword to create classmethods. They can't use 
+the `this` keyword within them.
+
+Just as we can have function templates, we can also have class templates. These 
+are useful mostly so that the methods can use template parameters as types. 
+```cpp
+template <class T>
+class mypair {
+    T values [2];
+  public:
+    mypair (T first, T second)
+    {
+      values[0]=first; values[1]=second;
+    }
+};
+
+//Create an object
+mypair<int> myobject (115, 36);
+mypair<double> myfloats (3.0, 2.18); 
+```
+
+**See `basics/template_specialisation.cpp` for an example**
+
+
+### CLass special members
+If a class has no constructors at all, it implicitly has an empty constructor,
+IE a constructor that sets not attributes. Once any other constructor is 
+added, this is no longer implicit and needs specifying by the programmer.
+
+A destructor does the opposite, and basically runs at the end of the object's 
+lifetime, emptying out the memory taken up by the object and it's attributes. 
+It's defined with no type, not even void, and is preceeded by a tilde.
+
+```cpp
+// destructors
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Example4 {
+    string* ptr;
+  public:
+    // constructors:
+    Example4() : ptr(new string) {}
+    Example4 (const string& str) : ptr(new string(str)) {}
+    // destructor:
+    ~Example4 () {delete ptr;}
+    // access content:
+    const string& content() const {return *ptr;}
+};
+
+int main () {
+  Example4 foo;
+  Example4 bar ("Example");
+
+  cout << "bar's content: " << bar.content() << '\n';
+  return 0;
+}
+```
+
+It's common that a destructor is called at the end of `main()` if not specified
+
+the `copy constructor` is triggered when you pass an object another of it's own 
+type as a arguement. ex `myClass::myClass (const myClass&);` - this only 
+needs a pointer to itself as the parameter.
+
+An implicit copy constructor only shallow copies the attributes, and when the 
+destructor triggers, they would both try to delete the same block of memory. 
+To avoid this, we create custom copy constructors that perform deep copies.
+
+```cpp
+
+// copy constructor: deep copy
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Example5 {
+    string* ptr;
+  public:
+    Example5 (const string& str) : ptr(new string(str)) {}
+    ~Example5 () {delete ptr;}
+    // copy constructor:
+    Example5 (const Example5& x) : ptr(new string(x.content())) {}
+    // access content:
+    const string& content() const {return *ptr;}
+};
+
+int main () {
+  Example5 foo ("Example");
+  Example5 bar = foo;
+
+  cout << "bar's content: " << bar.content() << '\n';
+  return 0;
+}
+```
+
+Copy constructors also trigger when creating a new object and applying an 
+existing one to it. Eg `myClass bar = foo` where `foo` already exists as an 
+object of `myClass`
+
+Similarly, you can use the `move constructor` to move a value from one object 
+to another, making sure that it doesn't stay in the source location. It's 
+triggered when an object is initialised on construction using an unnamed 
+object. 
+
+```cpp
+MyClass fn();            // function returning a MyClass object
+MyClass foo;             // default constructor
+MyClass bar = foo;       // copy constructor
+MyClass baz = fn();      // move constructor
+foo = bar;               // copy assignment
+baz = MyClass();         // move assignment 
+```
+
+`fn` and `myClass()` are unnamed classes in this instance. The move constructor 
+is an implicit overloaded `=` operator that takes an _rvalue_ specified with 
+two ampersands. 
+
+```
+MyClass (MyClass&&);             // move-constructor
+MyClass& operator= (MyClass&&);  // move-assignment 
+```
+
+The difference between the constructor and the assignment is that the move 
+constructor triggers when you create a class, wheras the assignment triggers
+when you use the `=` operator
+
+You can also explicitly remove the implicit functionality of these constructors 
+using the `default` and `delete` keywords. For example, this line will disable 
+the functionality of the _copy constructor_ on the Rectangle class:
+`Rectangle (const Rectangle& other) = delete`. Instead using the `default` 
+keyword in the same place can mostly be used for readability purposes and to 
+make the implicit functionality explicit. 
+
+### Friendship and Inheritance
+The `friend` keyword allows you can specify a class or method that can access 
+the private and protected methods/attributes of the class.
+
+Pointers to a child class is type-compatible with a pointer to it's base class.
+
+A virtual member is a method/attribute that can be redefined in a child, while 
+preserving it's features in the parent. This uses the `virtual` keyword
+
+```cpp
+class Polygon{
+    protected:
+        int width, height;
+    public:
+        virtual int area() {return 0;}
+}
+
+class Rectangle : public Polygon {
+    public:
+        int area() {return width * height;}
+}
+
+class Triangle : public Polygon {
+    public:
+        int area() {return (width * height / 2);}
+}
+```
+
+The `area` method is specified as virtual in the parent as it's redefined 
+in the children.
+
+You can also have a metaclass called an `abstract base class` that are designed
+to only act as a base class instead of a standalone class, and have 
+virtual member functions without definition. 
+
+```cpp
+// abstract class CPolygon
+class Polygon {
+  protected:
+    int width, height;
+  public:
+    void set_values (int a, int b) { width=a; height=b; }
+    virtual int area () =0;
+};
+```
+
+In this example, the area method is a pure virtual function as it has no 
+definition and instead ends with the `=0`. These ABC classes are mostly used 
+to create pointers to it and to use it's polymorphic features.
+
+You can use the `this` keyword in virtual methods that aren't pure virtuals.
+
+
 
