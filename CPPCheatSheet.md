@@ -567,4 +567,193 @@ See the `basics/pointer_functions.cpp` file for an example of this
 Usually memeory usage is determined by the compiler However there are times the
 memory will only be determined during runtime - ie user Input.
 
-Allocate dynamic memory with the `new` and `new[]` operators. 
+Allocate dynamic memory with the `new` and `new[]` operators. You get a pointer 
+to the beginning of a new block of memory returned.
+
+```cpp
+ptr = new int
+ptr = new string [4]
+```
+
+You can access these the same way you'd access any other pointers, or for the 
+pointer arrays, the same way you'd use any other array.
+
+The difference between normal arrays and dynamic memory is that the latter can 
+be set during runtime using any variable value as it's size.
+
+There are two ways to check if allocation was successful. 
+    - The first is by handling exceptions - `bad_alloc` is thrown when the 
+    allocation fails. 
+    - The second is called `nothrow`, and instead of raising an exception, the 
+    program continues on as if the new pointer is a null pointer. To use a 
+    nothrow, you need to specify it using this syntax: `t = new (nothrow) int [5]`
+
+```cpp
+int* foo;
+foo = new (nothrow) int [5];
+if (foo == nullptr) {
+    // error assigning memory, do something
+}
+```
+
+The exception checking is preferred as otherwise you need to check every 
+new pointer you create manually in the code.
+
+You only need to hold onto the memory for as long as the program needs it, and 
+should release that space once it's no longer needed. You do this with the 
+`delete` and `delete[]` keywords. 
+
+### Data Structures
+
+Declaring data structures are similar to how it's done in go using the `struct`
+keyword.
+
+```cpp
+struct human {
+    string name;
+    int age;
+    string hair_colour;
+} Joe, Bob; // Inline create new objects
+
+// Create a new object
+human Rosanna;
+
+// Accessing the attributes
+Rosanna.age = 25;
+```
+
+If you create an object in-line, you dont need to give the struct a name itself 
+as it's automatically assigned to the object created.
+
+As structs are basically custom data types, they're able to be pointed to with 
+their own pointers.
+
+```cpp
+human* ptr
+```
+
+You can also use the `->` operator as a dereference operator (similar to the 
+`&` operator) to get a struct object's attributes. 
+
+```cpp
+human bob;
+human* bobptr;
+// pointer pointing to the bob object
+bobptr = &bob;
+
+cout << "enter name ";
+// write to the name attribute of the object bobptr is pointing at
+getline(cin, bobptr->name)
+```
+
+In the above instance, `bobptr->name` is functionally identical to 
+`(*bobptr).name` and either can be used interchangably. 
+
+Structures can also be nested so that one structure can have an element that's 
+another structure.
+
+### Type alias
+A type alias is another name for any type. There are two ways to create a 
+type alias.
+
+The first way is using the `typedef` keyword, and is inherited from C. 
+`typedef char mychar;` - You specify the existing type and then give it it's new 
+name.
+
+The second type uses the `using` keyword: `using mychar = char;` where you name 
+the new alias before you assign a specific type to it. 
+
+`using` is more generic, and although they're both basically the same, `typedef`
+may have some limitations when it comes to templates. 
+
+You can also use `union`s, which basically assign multiple data types to the 
+same space in memory. These are commonly used to create a value that you can 
+either access or use as an array of it's elements. 
+
+```cpp
+union mix {
+    int num;
+    struct {
+        short hi;
+        short lo;
+    } s;
+    char c[4];
+}
+```
+
+We can use the above union to access a whole number of 4 bytes, or split it into
+two halves of 2 bytes each, or get each byte individually as a char. 
+
+When unions are members of a class/struct, they can be declared with no name, 
+making them anonymous. If they're anonymous, you can access data types within 
+by just calling them directly using dot notation. See the below example:
+
+```cpp
+struct book {
+    char title[50];
+    char author[50];
+    union {
+        float dollars;
+        int yen;
+    } price;
+}
+
+struct book {
+    char title[50];
+    char author[50];
+    union {
+        float dollars;
+        int yen;
+    } 
+}
+```
+
+See that the only difference is that the union isn't assigned the `price` name.
+In the first one, you can access the dollar value by doing `book.price.dollars`
+however in the second, all you need to do is `book.dollars`. 
+
+#### Enums/Enumerated types
+Enumerated types are types defined with a set of possible values, called 
+enumerators.
+
+```cpp
+enum type {
+    value1,
+    value2,
+    value3
+} object;
+```
+
+This creates a new type that can only accept specific values.
+
+```cpp
+enum months {
+    january=1, // Set the starting integer value when enumerating through these
+    february,
+    march,
+    april,
+    may,
+    june,
+    july,
+    august,
+    sept,
+    oct,
+    nov,
+    dec
+};
+
+The `=1` on january basically means that it starts from 1 instead of from 0.
+
+You can also create enums that aren't just convertible to ints by using 
+`enum class` or `enum struct` instead. These are commonly used for type safety
+and need to be scoped into the code.
+
+```cpp
+enum class EyeColour : char {blue, green, brown};
+EyeColour ec;
+
+my_ec = EyeColour::green;
+```
+
+## Classes in C++
+
