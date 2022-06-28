@@ -1017,5 +1017,221 @@ to create pointers to it and to use it's polymorphic features.
 
 You can use the `this` keyword in virtual methods that aren't pure virtuals.
 
+### Type conversions
+Implicit conversions are automatically performed when a value is copied to a 
+suitable compatible type, such as a `short` and an `int`
 
+Converting to int from a smaller type is called a promotion. Same as double to 
+float. Conversions to/from bool consider False as 0 or nullptr, and True as 
+everything else. 
+
+Arrays and functions convert to pointers. nullptr can convert to pointers of 
+any type. 
+
+There are three ways to convert between classes: using constructors, using 
+assignment, and using a type-cast operator.
+
+```cpp
+// implicit conversion of classes:
+#include <iostream>
+using namespace std;
+
+class A {};
+
+class B {
+public:
+  // conversion from A (constructor):
+  B (const A& x) {}
+  // conversion from A (assignment):
+  B& operator= (const A& x) {return *this;}
+  // conversion to A (type-cast operator)
+  operator A() {return A();}
+};
+
+int main ()
+{
+  A foo;
+  B bar = foo;    // calls constructor
+  bar = foo;      // calls assignment
+  foo = bar;      // calls type-cast operator
+  return 0;
+}
+```
+
+The third method there, the type-cast operator, is using the `operator` keyword 
+to convert to the specified class, and also returns that specific class.
+
+You can also use the `explicit` keyword when creating the method to specify 
+that it should _only_ take a type that it's given and not convert from another 
+type, such as the first constructor above. 
+
+You can cast one type to another using two different methods - functional, or 
+C-like (inherited from C)
+
+```cpp
+double x = 10.3;
+int y;
+y = int (x);    // functional notation
+y = (int) x;    // c-like cast notation
+```
+
+In order to control conversions between classes, we use different operators 
+with the following syntax: `type_cast <new_type> expression`
+    - dynamic_cast 
+    - static_cast
+    - reinterpret_cast
+    - const_cast
+
+**Dynamic cast** can only be used with pointers and references to classes or
+void. It can also be used to move between a pointer on a parent class to a 
+pointer on a child class. Note that this will need RTTI and some compilers 
+disable this by default. 
+
+Without dynamic cast, a pointer to a parent class can't be converted to a child
+pointer as there will be incomplete information, such as attributes that aren't 
+filled or methods that aren't pointed to.
+
+**static cast** can convert between pointers of parent and child classes 
+without any form of checking, and the safety here is up to the programmer. 
+It's more memory efficient than dynamic casting, however. It can also be used 
+to convert between integers and floats to enums.
+
+**reinterpret cast** can convert any pointer to any other pointer, regardless
+of if the two classes are related at all. It acts as a simple binary copy. 
+You can't dereference safely a reinterpreted pointer. 
+
+**const cast** can basically toggle between a const object and a non-const
+object. This is primarily useful when passing pointers to functions that 
+specify they have to be consts. 
+
+You can also use the `typeid()` function to check the type of an object or 
+expression. To use this, you'll need to `#include <typeinfo>` at the top of 
+the file too. You can also use operators such as `==` and `!=` on this function
+
+When applied to classes, `typeid()` uses RTTI (RunTime Type Information) to 
+track dynamic objects. 
+
+### Exceptions
+
+Exceptions are errors that may arise in the code. Each exception has it's own 
+type and is thrown with teh `throw` keyword within the `try` block of a 
+`try/catch` statement.
+
+A now deprecated but still used way of raising an exception is by using 
+notation similar to a function definition with a `throw` specifier on it. 
+`double foo (char param) throw (int);`
+
+You can also import the <exception> header to provide general exceptions that 
+we are used to from other languages. You can also create your custom 
+exceptions using child classes off the exception class, which also provides the
+`what` method that returns a char* with a description.
+
+Valid provided exceptions include:
+    - bad_alloc - thrown by `new` on allocation failure
+    - bad_cast - thrown by `dynamic_cast` when it fails
+    - bad_exception - thrown by dynamic exception specifiers
+    - bad_typeid - thrown by `typeid`
+    - bad_function_call - thrown by empty function objects
+    - bad_weak_ptr - thrown by `shared_ptr` when passed a bad `weak_ptr`
+
+These will all automatically be caught by `catch (exception& e) {}`
+
+The `<exception>` header also offers two generic exception types to raise:
+`logic_error` and `runtime_error`.
+
+Any time you do anything with memory allocation, wrap it in a try/catch for 
+`bad_alloc` as that's a very common error. 
+
+### Preprocessor directives
+These are any lines at the top of the file that start with a `#` - the only 
+one we've seen so far is the `#include` directive to include specific header 
+files. These lines are read before the code is compiled together.
+
+We can define consts at pre-processor level by using the `#define` statement. 
+`#define VAR val` - these can be statements, blocks, or any valid C++ and 
+replace where they're called at compilation time. They can also work with 
+parameters to define macros `#define getmax(a,b) a>b?a:b`
+
+Note that directives don't need to end in a semicolon.
+
+Defined macros aren't affected by block structure and last until they're 
+undefined with the `#undef` statement.
+
+You can also use `#` symbols inline followed by a parameter name as a 
+replacement sequence.
+```cpp
+#define str(x) #x 
+cout << str(test);
+
+// This would become
+cout << "test";
+```
+
+You can also use the `##` operator to concatenate two arguments between them
+
+Condintional inclusions let you specify if specific code should be included 
+only if conditions are met. You can combine these with the `defined` and 
+`!defined` keywords to specify certain variables. 
+
+```cpp
+#if defined ARRAY_SIZE
+#define TABLE_SIZE ARRAY_SIZE
+#elif !defined BUFFER_SIZE
+#define TABLE_SIZE 128
+#else
+#define TABLE_SIZE BUFFER_SIZE
+#endif 
+```
+
+There is also the `#line` directive that lets you specify the line number of 
+the next line in your file - which will show up in error messages. You 
+can also specify the filename afterwards as an optional parameter. It's unclear 
+what the purpose of this is.
+
+The `#error` directive aborts the compilation process when it's found, 
+generating an error message specified as a parameter. 
+
+Not mentioned above, you can also use #include to import another file, calling 
+it instead with double quotes instead of angle brackets.
+
+`#pragma` is used to specify options in the compiler. Check your compiler 
+docs for specifics. If a specific argument doesn't exist, it's just ignored
+and no error message is raised.
+
+### File IO
+There are multiple headers you can use for various read/write stuff
+    - ofstream - stream to write to files
+    - if stream - stream to read from files
+    - fstream - both write and read
+
+You can check if the file has successfully opened with the `myFile.is_open()`
+method, often combined with an IF statement.
+
+You can also use the following boolean methods on your file stream
+    - `bad()` - returns true if IO operation fails
+    - `fail()` - Same as `bad()` but also returns true on formatting errors
+    - `eof()` - return true if end of file reached
+    - `good()` - most generic, returns false when any other would return true
+    - `clear()` - reset these flags. 
+
+ifstream/istream store a `get` position of the next element to be read, and 
+ofstream/ostream store a `put` position which is the next location to write 
+to. fstreams keep both, as well as iostream. These can be observed and modified
+
+`tellg()` and `tellp()` return a value of type `streampos` representing these 
+values. You can change these positions with `seekg()` and `seekp()` which 
+accept a value of streampos as well. You could also pass in an offset and a 
+direction together. The direction is an enum that holds some of the `ios::` 
+values. 
+
+#### Binary files
+Instead of using `getline`, we can use `read` and `write` functions on binary 
+file streams, based on how they are opened. However, instead of text, they need 
+to be passed a memory block and a size as we are working in bytes instead of 
+absolute file contents. The memory block is a char pointer pointing to the 
+mem address of the data that you want to read from or write to. Size is an 
+integer that specifies the number of characters. 
+
+We can open a file in `ios::ate` mode to open it with a pointer pointing at the 
+end of the file. We also need to remember to open it with `ios::binary` mode
 
