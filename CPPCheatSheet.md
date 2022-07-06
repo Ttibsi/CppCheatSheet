@@ -1235,3 +1235,34 @@ integer that specifies the number of characters.
 We can open a file in `ios::ate` mode to open it with a pointer pointing at the 
 end of the file. We also need to remember to open it with `ios::binary` mode
 
+### LearnCPP Notes
+* The `static` keyword before a variable meaks that it only applies to the
+current file - eg `static int foo = 3;`. This is related to the concept of 
+linkage.
+* The opposte to this is the `extern` keyword, that's used to force a variable
+to be accessible outisde of the file it's defined in.
+* Global variables by convention begin with `g_` ex `int g_foo;`
+* It's good practice to initialise all your global vars in a header file, 
+although they'll want to be `extern const` variables. Also, use a namespace
+around them.
+* `constexpr` is used on a variable or function that's a constant to make sure
+that it can be used in expressions
+* In C++20, you can use `consteval` on a function to make sure that it compiles
+at compile-time over `constexpr`.
+* Unnamed namespaces are namespaces defined without a name. They're treated as
+if everything in their scope is in the parent scope but marked as static.
+* Using the `inline` keyword when defining a namespace (`inline namespace foo`)
+is used for mostly versioning something. This allows you to call multiple
+namespaces with similar content.
+* If you intend for multiple case statements to be triggered at once in a
+switch/case, you can use `[[fallthrough]];` to show you intentionally have not
+broken out using a `break` or `return` statement. (c++17 or newer). (See 
+`learnCPP/isVowel.cpp`)
+* `cin.ignore()` will take an int of characters to clear from the buffer, or
+can also be given a character to near up to (usually a newline)
+* `#include <assert>` and the `assert()` function are useful for checking your
+code. You can also pass an `assert()` an error message to raise as a string
+using logical AND (ex `assert(foo && "No foo found")`) - this works because of
+a quirk when it comes to logic and output.
+* A `static_assert()` is checked at compile time instead of run time and can 
+take a condition and a diagnostic message.
