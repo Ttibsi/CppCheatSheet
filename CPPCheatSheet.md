@@ -1266,3 +1266,11 @@ using logical AND (ex `assert(foo && "No foo found")`) - this works because of
 a quirk when it comes to logic and output.
 * A `static_assert()` is checked at compile time instead of run time and can 
 take a condition and a diagnostic message.
+* static_cast and dynamic_cast are the only casts you really need to worry 
+about as the others are all avoided as best practice.
+* `auto` can be used as a var type definition based on the initialised value 
+it's given. It can also be used as the return type for functions although those
+are unfavourable.
+    * A function can also use `auto foo(int x, int y) -> int` to specify it's
+    return type - this is important mostly for anonymous functions.
+
