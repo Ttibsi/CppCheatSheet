@@ -1273,4 +1273,11 @@ it's given. It can also be used as the return type for functions although those
 are unfavourable.
     * A function can also use `auto foo(int x, int y) -> int` to specify it's
     return type - this is important mostly for anonymous functions.
-
+* `nullptr` mplicitly convert to `false`, whereas every other pointer equates
+to `true`
+* Dangling pointer is a pointer who's object has been destroyed/out of 
+scope. For this reason, you want to **prefer reference** (&) over a pointer (*)
+* return from a function by reference over by pointer as otherwise you'll need 
+to check for `nullptr` each time
+* You can set an auto type var to a const as well to enforce it: 
+`const auto foo = 2`
