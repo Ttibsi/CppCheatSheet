@@ -1281,3 +1281,17 @@ scope. For this reason, you want to **prefer reference** (&) over a pointer (*)
 to check for `nullptr` each time
 * You can set an auto type var to a const as well to enforce it: 
 `const auto foo = 2`
+
+Custom data types
+-----------------
+* An enum is a compound data type where every possible value is pre-defined. 
+* You can't have multiple enums in the same namespace use the same valid 
+value name. It's best practice to put them inside `namespace` blocks.
+* You can specify the data type used in an enum instead of an int using this
+syntax: `enum Foo : stud::uint8_t {};`
+* A **scoped enum** is an enum that belongs only to the current scope, and is 
+defined inside a block  (such as a function). These are `enum class` and the
+values don't narrow down to ints. 
+* A `struct` is basically a dataclass from python (not really), holding 
+multiple attributes under the same name.
+* You can create const struct variables.
