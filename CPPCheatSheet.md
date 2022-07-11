@@ -1306,3 +1306,18 @@ operator to get the attributes instead of the `.` operator. (see
 * When working with C-style strings, which are just char arrays, the best way
 to get input from `cin` is like this (`std::cin.getline(foo, std::size(foo));`)
 
+Pointers and arrays
+-------------------
+* Arrays are not pointers. A pointer will only point to a single element and
+know nothing about the other elements in the array.
+* `sizeof(array)` will return the size of the whole array, whereas
+`sizeof(ptr)` will only see the single value.
+* When passing an array into a function, it decays into a pointer.
+
+* A void pointer `void* ptr` can point to any data type, but can't be 
+dereferenced using `*ptr` because the compiler doesn't know what type its
+contents is meant to be.
+    * However, we can static cast it over instead.
+* When initialising a `std::array` of a struct, you need to wrap the 
+initialisation of each item in a second set of curly braces:
+(`myStruct arr = {{{item 1}, {item 2},}}`)
