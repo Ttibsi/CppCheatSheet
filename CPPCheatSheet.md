@@ -1295,3 +1295,14 @@ values don't narrow down to ints.
 * A `struct` is basically a dataclass from python (not really), holding 
 multiple attributes under the same name.
 * You can create const struct variables.
+* You can pass a struct object around by const reference to access the
+attributes.
+* Structs can be nested within each other, however the inner one will only
+exist for the length of the outer one.
+* When you have a pointer to an object (such as a struct), you use the `->`
+operator to get the attributes instead of the `.` operator. (see 
+`learnCPP/structs.cpp`)
+
+* When working with C-style strings, which are just char arrays, the best way
+to get input from `cin` is like this (`std::cin.getline(foo, std::size(foo));`)
+
