@@ -1321,3 +1321,23 @@ contents is meant to be.
 * When initialising a `std::array` of a struct, you need to wrap the 
 initialisation of each item in a second set of curly braces:
 (`myStruct arr = {{{item 1}, {item 2},}}`)
+
+Pointers and functions
+----------------------
+* Creating a pointer to a function call looks something like this: 
+`int (*ptr)();` where you make sure the return type is on the left and the 
+list of params are in the second set of brackets.
+    * To make it const, you include the const keyword in the first
+    set of brackets before the ptr name
+
+* Vectors can be used as a stack because of their `push_back()`, `push()` and
+`pop()` methods.
+
+Command line arguments
+----------------------
+* We pass two separate parameters to `main()`:
+    * `int argc` is argument count, which is the number of arguments passed
+    to the program. This will always be at least 1 because we're passing in 
+    the name of the program itself.
+    * `char* argv[]` is argument values/vectors, which is the actual contents
+    of what we're passing in. It's an array of c-strings of length argc

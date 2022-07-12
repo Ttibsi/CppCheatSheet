@@ -32,4 +32,5 @@ int main() {
     std::vector<int> myVec;
     std::vector<int> myVec2 = {1,2,3};
     myVec.resize(10); // resize vector super easy
+    std::cout << myVec.capacity() << '\n';
 }
