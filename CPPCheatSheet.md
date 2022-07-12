@@ -1341,3 +1341,39 @@ Command line arguments
     the name of the program itself.
     * `char* argv[]` is argument values/vectors, which is the actual contents
     of what we're passing in. It's an array of c-strings of length argc
+
+Object Oriented Programming
+---------------------------
+* While there are multiple ways to create a default constructor, including 
+treating it as any other function, with the definitions in the body, the best
+practice is to use a member initialisation list, which holds all the attribute
+assignments in a single line. (ex `foo(): a{1}, b{2} {}`)
+    * This goes the same for constructors that set values
+    * The purpose for this is to be able to set const values
+* You can have one constructor that has some functionality in it's body and
+another constructor can access that. This uses a colon then calling the name 
+of the other constructor like so: `foo(int x): foo{}`
+    * This is called a delegating constructor
+    * You can also use this if you have multiple constructors using default
+    param values. 
+* Constructors can call non-constructor methods as well, so it's better to 
+have setup functionality in it's own method.
+* Destructors are typically used when a class holds a connection to a database
+or an open file stream, or otherwise utilises dynamic memory that needs 
+releasing to the OS
+    * They have the name of the class with a tilde at the start `~Foo() {}`
+    * These should not be called explicitly
+    * If you used the keyword `new` in your constructor, you'll want to 
+    have a destructor using the `delete` keyword on the same attributes
+* `this` is a const pointer that points to the current object. 
+    * You'll only really need it when you have a parameter and a attribute
+    with the same name in a constructor, most likely
+* A static attribute is at the class level, not the object level, and can be
+accessed by multiple objects of the same class. It's default value has to be 
+set outside of the class otherwise it'll be reset each time a new object is
+created. 
+* Classes can act as a namespace for custom types/enums. You'll want your enum
+in a public space before the private space that the attributes are defined in
+so that you can use the type in those attributes
+
+
