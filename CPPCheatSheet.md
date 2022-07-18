@@ -1422,3 +1422,51 @@ occuring using specific parameters. (ex: `Foo(char) = delete;`)
 * Note that using the `new` keyword also allows you to deep copy from one 
 variable to another.
 
+Object relations
+----------------
+* Objects and complex data types are built up of various smaller fundamental
+data types using things like structs, classes, and enums. Arrays are also a
+part of this, as they allow you to create more complex groups of data.
+* A **composition** is a complex object that includes the following 
+    * A part is part of a class 
+    * The part can only belong to one object at a time
+    * The part has it's existance managed by the object
+    * The part does not know about the existance of the object
+* Compositions are one of the easiest types of relationships to define in C++
+as they usually only require simple classes as usually any attribute isn't 
+aware of the object they're part of, but the object is aware of the attribute
+* One way to remember this is that they're a composition of their parts
+
+* The other hand is **Aggregation** - this has the following description
+    * The part is part of the object
+    * The part can belong to more than one object at a time
+    * The part does not have it's existance managed by the object
+    * The part does not know about the existance of the object.
+* These typically rely on pointer members, although they can use value members
+as well.
+* This is usually an `is a` relationship
+
+* Implement the simplest relationship your code needs, not the correct one for
+real life.
+
+* An **association** has the following relationship properties:
+    * The associated object is otherwise unrelated to the main object
+    * The associated object can belong to more than one main object at a time
+    * The associated object doesn't have it's existance managed by an object
+    * The associated object may or may not know about the existance of the
+    object
+* This relationship can be bi-directional, unlike an aggregate relationship
+that's always uni-directional
+* This is usually a `has a` relationship
+
+* Dependancies are the last type of relationship, and the simplest. One object
+can have a reliance on some code in another, a dependancy on the other.
+
+* **Container classes** are classes that are designed to hold and organise 
+multiple instances of another type. The most commonly used example of this is
+the array - specifically <array> and <vector> are array-style container 
+classes. 
+* If you're creating a container class such as your own version of an array,
+you can use the `<initializer_list>` to initialise things like you would a
+standard array (ex `int array[] {1,2,3,4,5}`)
+
