@@ -1376,4 +1376,49 @@ created.
 in a public space before the private space that the attributes are defined in
 so that you can use the type in those attributes
 
+* operators are treated as functions, so you cn overload them as well. 
+* You cant create new operators, however
+* There are multiple methods of overloading an operator for a class
+    * You can create a friend function that you attach to the class
+    * Create them as standard functions that you call with a return
+    type of the class
+    * Overloading operators as member functions/methods.
+        * using this method, the left operand becomes the a pointer to this:
+        `*this` - which is implicit.
+        * This doesn't work for things that require set left operands, such as
+        the `<<` operator.
+* You need to make sure that your new functions have the right argument types.
+This can catch you out if you use anonymous classes
+* Overloading the `<<` operator is a good way to print out the contents of an
+object. Using a friend function, it would look like this:
+
+```cpp
+friend std::ostream& operator<< (std::ostream& out, const Point& point);
+
+// This will print out the object point of class Point
+std::cout << point;
+```
+
+* It's usually preferred to use a standard function in this case, although 
+sometimes there are reasons to use other methods. 
+* Only overload operators that make sense for your class.
+    * If you want functionality that involves sorting, you may need to overload
+    all the comparison operators
+* When overloading `++` and `--`, you can check if they're before or after a 
+variable (IE the difference between `x++` and `++x`) by having an int parameter
+in your overloaded functions for the postfix (`x++`) operators
+* When overloading the `()` operator, you have to do it as a method as 
+otherwise it'll typing `operator()` will just count it as trying to call a 
+function.
+    * Overloading this operator is useful for input validation when creating
+    an objecct
+* You can also overload type casting with `static_cast` to tell your class 
+how to behave when it's converted into a fundamental data type. 
+
+* Using the `explicit` keyword on a constructor (ex: `explicit Foo() {}`) will
+tell the compiler to make the constructor ineligable for implicit conversions.
+* you can also use the `delete` keyword to stop any class construction from
+occuring using specific parameters. (ex: `Foo(char) = delete;`)
+* Note that using the `new` keyword also allows you to deep copy from one 
+variable to another.
 
