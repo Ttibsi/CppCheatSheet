@@ -1445,6 +1445,7 @@ aware of the object they're part of, but the object is aware of the attribute
 * These typically rely on pointer members, although they can use value members
 as well.
 * This is usually an `is a` relationship
+    * Inheritance is an example of this
 
 * Implement the simplest relationship your code needs, not the correct one for
 real life.
@@ -1469,4 +1470,22 @@ classes.
 * If you're creating a container class such as your own version of an array,
 you can use the `<initializer_list>` to initialise things like you would a
 standard array (ex `int array[] {1,2,3,4,5}`)
+
+* When using Inheritance, you want to make sure that the child's constructor
+calls the parent's constructor as well. This is the best way to pass values
+through to the attributes the parent initialises.
+    * This is especially true when the parent's attributes are private
+* Favour private attributes over protected attributes
+* Child classes can also overload parent methods with their own definitions
+of those methods.
+    * You can still call the parent method within the child method to extend
+    functionality instead of writing it again from scratch
+* You can also static_cast a derived object into a parent object 
+* You can add a parent's protected method to the child classes using the 
+`using` keyword - ex `using parent::method`. This doesn't change the access 
+level
+
+* You can have a child class with multiple parent classes by using a comma:
+(`class Child: public Parent1, public Parent2`)
+    * This can add a high level of complexity and hidden issues to some code
 
