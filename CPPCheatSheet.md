@@ -1488,4 +1488,54 @@ level
 * You can have a child class with multiple parent classes by using a comma:
 (`class Child: public Parent1, public Parent2`)
     * This can add a high level of complexity and hidden issues to some code
+* You can have a reference or pointer of type parent pointing to the child
+object
+    * These are useful so that you dont have to overload methods, instead you 
+    can call a method with a reference to the parent and go from there.
+* A Virtual Function is an example of polymorphism, and it tells the compiler
+to use the most-derived version of the function it can. This usually means 
+that the child method would have the same signature as the parent.
+    * This is easily done by just adding `virtual` to the start of the function
+    definition.
+    * Do not call these from constructors/destructors due to object creation
+    and stack resolution reasons
+* Instead of using `virtual` on the derived/child methods, you can add 
+`override` at the end (before the  {}) and this will help make sure that you've
+actually overridden the method you think you have. 
+* The `final` operator on the end of a method signature stops anything from 
+overriding it, that will raise a compiler error instead. 
+* Covariant virtual functions are functions with different return types to 
+their parent's method yet are still a virtual function.
+    * This only works if what you're returning is a pointer to the class, so
+    the child class method would have to return the a child pointer
+* You could **always** make your destructors virtual if you're working with 
+inheritance
+    * If a parent's destructor is virtual, the implicit destructor on a child
+    class will be too
+    * A destructor should either be public and virtual or protected and
+    non-virtual
+    * If you intend to inherit from your class, make your destructor virtual
+    otherwise, make it final.
+
+* Pure virtual functions are functions with no body that are intended only
+to be inherited and redefined later down the line, and are initially assigned
+the value 0. (ex `virtual int getValue() const = 0;`)
+* Classes with multiple pure virtual functions are called Abstract Base Classes
+and you cant create objects from them.
+    * see `learnCPP/ABC.cpp`
+* Interface classes are classes with no attributes, only pure virtual methods. 
+* Slicing is when you pass a child object when creating a parent object because
+you're cutting off half of the object that way. It's usually benign, you just 
+need to be aware of what you're doing.
+    * This can catch you out if you have an array/vector of type Parent and you
+    try to append an object of type Child. (It's recommended to make an array 
+    of pointers to objects instead - nullptr also becomes a valid option)
+    * This can also get a bit screwy if you're working with functions that take
+    specific object parameters, so you should instead make sure that your 
+    functions take references or pointers to the objects instead.
+* `dynamic_cast` is used most often for downcasting, which is turning a parent
+class object into a child object.
+    * If this fails, this will return a nullptr instead 
+
+
 
