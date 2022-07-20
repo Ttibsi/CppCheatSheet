@@ -1537,5 +1537,12 @@ need to be aware of what you're doing.
 class object into a child object.
     * If this fails, this will return a nullptr instead 
 
+* Just like a function, a class can have templetes and template specialisation.
+These work very similarly, using the same `template <>` syntax.
+* Keep in mind that you need to keep the public part of the class the same.
+* We can also create classes where some template parameters are explicitly 
+defined and other's arent. This is useful for example when you're createing 
+an array of a variably-defined length. To do this, you only need to pass the 
+variables you want to template into the `template` keyword.
 
 
