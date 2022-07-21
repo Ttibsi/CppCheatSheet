@@ -1563,3 +1563,84 @@ There are no template parameters there that are being passed in, so the
 `template <>` angle brackets are empty, but they're still needed as this is
 a template method.
 
+Exceptions
+----------
+* One of the easiest ways to handle errors is via return codes, making the
+function return an integer
+    * However, actually checking for them has a number of issues
+        * They need to be regularly checked for
+        * You can't tell the difference between a return code and a 
+        legitimate integer
+* Exception handling uses three separate important keywords: `throw`, `catch` 
+and `try`
+* `throw` is used to raise an exception. This can include a return code, an 
+enum value, a c-string, or an exception object.
+* A `try` block is set around any code that may throw an error. Basically, a
+`try` should always have a `throw` inside it, or a function call that raises a
+`throw`
+* The `catch` block tells the code what to do when a specific data type is 
+thrown. 
+* After a `throw` is found, any code below it is never triggered in the rest
+of the `try` block it goes straight out to the `catch`
+* You can `throw` exceptions outside of a `try` block. 
+* There's also a `catch-all` handler that acts as it sounds, handing all 
+uncaught exceptions throughout the code. This is just a `catch` with the 
+catch type of an ellipses `catch (...) {}`
+    * This is often left empty. 
+    * It's thought of as good practice to wrap main() in a catch-all
+* You can use exception handling in methods where you overload operators
+for input checking and error handling there. 
+* An exception class is a class designed to be thrown as an exception.
+    * You can use exception classes for specific information
+    * You can also have child classes of specific self defined exception types
+    and can match them on the parent class in the `catch` block.
+* There's also `std::exception` in the `<exception>` header, which we can 
+import to use a number of different built-in exceptions instead.
+    * You use `exception.what()` to get the name and contents of the exception
+    * You also don't want to raise the base exception class as it's just an 
+    interface class. Instead, you want to throw specific errors, and then try
+    to catch the interface class as it'll cover all those errors raised.
+* Using an empty `throw` statement allows you to reraise the previously 
+raised error. This is like using an empty `raise` in python.
+* You can also wrap the creation of a constructor in a try block in a different
+way, which is beneficial when you're trying to make sure that a parent class
+is constructed correctly in a child class. See the below snippet.
+
+```cpp
+class A {
+    int x {};
+
+    public:
+        A(int foo) : x{foo} {
+            if (foo < 1) { throw 1; }
+        };
+}
+
+class B : public A {
+    public:
+        B(int bar) try : A(bar) {} catch(...) { 
+            std::cout << "Exception caught" << '\n';
+        }
+}
+```
+
+You can see that the `try` is part of the constructor here, and that the 
+`catch` is catching whatever the constructor raises.
+* You need to remember to clear up resources when triggering a catch, as it 
+doesn't happen automatically, such as a database connection or open file.
+    * Destructors also aren't called at this point either, so you will have
+    to clean up objects too
+    * Destructors should not throw exceptions
+* There are also keywords that can be added to the end of a function signature 
+to specify if they raiwse an error or not.
+* The `noexcept` keyword states that a function does not throw an exception.
+This does not stop an exception from actually being thrown, it just instead
+triggers `std::terminate`, which can cause issues and is best avoided.
+    * `noexcept` can accept a boolean parameter, and if that's set to false
+    then the function could potentially throw an error. This is generally only
+    used with a function template.
+    * You can also use `noexcept` in the body of a function to check if a
+    specific expression could throw an exception or not. This returns a bool 
+    and you can check against that bool to trigger code or not. THis is called
+    an exception safety guarantee. 
+
