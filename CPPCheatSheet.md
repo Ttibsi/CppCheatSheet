@@ -1537,12 +1537,29 @@ need to be aware of what you're doing.
 class object into a child object.
     * If this fails, this will return a nullptr instead 
 
-* Just like a function, a class can have templetes and template specialisation.
-These work very similarly, using the same `template <>` syntax.
-* Keep in mind that you need to keep the public part of the class the same.
-* We can also create classes where some template parameters are explicitly 
-defined and other's arent. This is useful for example when you're createing 
-an array of a variably-defined length. To do this, you only need to pass the 
-variables you want to template into the `template` keyword.
+template classes
+----------------
+* Just like functions, you can create a class template using different data 
+types
+* methods need their own templates as well.
+* Most standard library things are templates as well (ex `std::vector<int>`)
+* Unlike standard classes, class templates should have the body of their
+methods in their header files as well due to issues with imports and the
+linker.
+* When you define the template line, you can also have attributes that aren't
+of an unknown typeline. Ex `template <typename T, int size>` - and this acts 
+basically like a parameter for a class instantiation.
+* We can use function template specialisation to create methods that use 
+pre-defined data types. This looks something like this:
 
+```cpp
+template <>
+int Class<int>::number() { return 1; }
+```
+
+There are no template parameters to be passed in, but this method will only 
+be available when the class is of the int type as that's the one specified.
+There are no template parameters there that are being passed in, so the 
+`template <>` angle brackets are empty, but they're still needed as this is
+a template method.
 
