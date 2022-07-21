@@ -1644,3 +1644,20 @@ triggers `std::terminate`, which can cause issues and is best avoided.
     and you can check against that bool to trigger code or not. THis is called
     an exception safety guarantee. 
 
+Smart pointers
+--------------
+* Smart pointers allow for memory management while using pointers and making 
+sure that they don't get let behind or dropped at the wrong times. 
+* A smart pointer is a class that takes in a pointer, and has a copy 
+constructor and move operator that's designed to make sure that the pointer
+is safely used. 
+* They also have defined destructors to empty that space of memory when they go
+out of scope.
+* Don't use `std::auto_ptr` - it's deprecated, and was removed in C++17
+* Smart pointers tend to use class templating and is often constructed with
+another class type as opposed to a fundamental type.
+* Smart pointers are very regularly used as they make the code safer when it 
+comes to memory management, as otherwise you'd have to wrap basically 
+everything in a try-catch, which is inefficient. It's better to use smart
+pointers and wrap main() in a catch-all
+
