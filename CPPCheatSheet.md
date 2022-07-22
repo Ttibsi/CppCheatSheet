@@ -1660,4 +1660,60 @@ another class type as opposed to a fundamental type.
 comes to memory management, as otherwise you'd have to wrap basically 
 everything in a try-catch, which is inefficient. It's better to use smart
 pointers and wrap main() in a catch-all
+`std::unique_ptr` is a standard library version of a smart pointer
+
+* Anonymous/unnamed values are rvalues, and you can create a reference to them
+with two ampbersands `int &&rval {5};` which creates a specific type of temp
+reference that extends the value's scope to the end of the block instead of 
+the end of the line.
+    * You should never return an rvalue or rreference
+
+* As of C++11, there are move constructors and operators as well as copy
+constructors and operators
+    * Move assignment takes an rref with two ambersands instead of a single
+    reference
+* Moving is more memory effiient than copying as there's less to create and 
+destroy
+* Move constructors/assignment is called when the parameter given is an rvalue
+    * Typially a literal or temporary value
+* Movers aren't implicit like destructors are
+* Often, a class with movers will remove the copiers
+* These are specifically relevant in smart pointer classes.
+
+* You can use `std::move` from the `<utility>` header to treat an lvalue as
+an rvalue for the purpose of moving it into another value, such as adding a
+string to a vector.
+    * This difference there is between copying and moving - using `move` treats
+    it as a move operation instead of a copy operation.
+* We can use `std::move_if_noexcept` as well to determine if a move should occur
+or not - it'll trigger a move in the same way as `std::move`, but only if the 
+given argument won't trigger an exception.
+
+`std::unique_ptr` lives in the `<memory>` header.
+* When you use this, it should completely own the object it manages, not share 
+it with other classes.
+* unique_ptr accuately creates move semantics, meaning you can move items 
+around easily enough.
+    * Because of this, copy semantics are disabled
+* THis will also impliticly cast to a bool to tell you if the ptr manages a 
+resource or not (ie is a nullptr or otherwise empty) so you can us a simple IF
+statement to check 
+* Dont' use a unique_ptr for an array object as there are better choices in 
+a `std::vector`, `std::string` or `std::array` (dynamic array, c-string, fixed
+array)
+* You can use `.get()` to get the actual pointer back
+
+* On the other hand, there's `std:shared_ptr` that lets you share an object
+between multiple pointers
+* This can cause scoping issues and problems with destructors as if one 
+goes out of scope, it will trigger the destructor, then another goes out of
+scope again, it will also try to trigger that object's destructor.
+* You can use `std::make_shared` to create a sharedptr, this is safer than the
+base way.
+* Note that prior to C++20, this doesn't support arrays very well and you
+probably shouldn't use it that way. 
+* When shared pointers have a circular dependancy/reference, they'll prevent
+each other from being destroyed
+    * This can be prevented by setting a pointer attribute to a weak pointer
+    instead. (ex `std::weak_ptr<Class> ptr;`)
 
