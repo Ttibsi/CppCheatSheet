@@ -33,4 +33,13 @@ int main() {
     std::vector<int> myVec2 = {1,2,3};
     myVec.resize(10); // resize vector super easy
     std::cout << myVec.capacity() << '\n';
+
+    //Iterate through a vector using `iter`, a pointer to each item
+    std::vector<int>::const_iterator iter;
+    iter = myVec.cbegin();
+    while (iter != myVec.cend()) {
+        std::cout << *iter << ' ';
+        ++iter;
+    }
+
 }
