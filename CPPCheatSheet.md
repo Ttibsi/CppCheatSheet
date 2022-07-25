@@ -1717,3 +1717,37 @@ each other from being destroyed
     * This can be prevented by setting a pointer attribute to a weak pointer
     instead. (ex `std::weak_ptr<Class> ptr;`)
 
+
+###Strings and C-strings
+* C-strings are a pain in the ass because you have to manage your own memory 
+* `std::string` is used for UTF-8 characters, and `std:wstring` (wide string) 
+is used for UTF-16 characters. 
+* They both build off of the same template class, so they have the same 
+methods attached to them.
+* You should create your own template function to convert other data types to
+strings before initialising a string with them. - there's the `std::toString()`
+function, but it's not always the most reliable so writing your own isn't the
+worst idea
+* You can use `.size()` or `.length()` to get the length of a string, or 
+`.empty()` to see if it's an empty string.
+* A string capacity is how much memory is allocated to it, which is not always
+the same as the length. This can be found with `.capacity()`. There's a benefit
+to manipulating the size of the string early before assigning to it when it 
+comes to memory allocation.
+* There are two ways to access specific characters
+    * The first way is by indexing them using `operator[]`
+    * The second slower way uses `.at()` to return the char at the given index.
+    This method uses exceptions to see if the index is valid.
+* There are also multiple ways to get a C-string out of an std::string which 
+some functions from C require
+    * `.c_str()` will return a c-string version of the current string and the
+    most well recommended one.
+    * `.data()` will do the same as above, returning a const.
+    * `.copy()` is also an option, although slightly more complex to use.
+* You can use `str1.swap(str2)` or `swap(str1, str2)` to swap the contents of
+two strings
+* You can use the `.append()` method to append to the end of a string too
+* And there's the `.insert(idx, substr)` method to insert a given substring
+into the index location provided
+
+
