@@ -1282,8 +1282,7 @@ to check for `nullptr` each time
 * You can set an auto type var to a const as well to enforce it: 
 `const auto foo = 2`
 
-Custom data types
------------------
+####Custom data types
 * An enum is a compound data type where every possible value is pre-defined. 
 * You can't have multiple enums in the same namespace use the same valid 
 value name. It's best practice to put them inside `namespace` blocks.
@@ -1306,8 +1305,7 @@ operator to get the attributes instead of the `.` operator. (see
 * When working with C-style strings, which are just char arrays, the best way
 to get input from `cin` is like this (`std::cin.getline(foo, std::size(foo));`)
 
-Pointers and arrays
--------------------
+####Pointers and arrays
 * Arrays are not pointers. A pointer will only point to a single element and
 know nothing about the other elements in the array.
 * `sizeof(array)` will return the size of the whole array, whereas
@@ -1322,8 +1320,7 @@ contents is meant to be.
 initialisation of each item in a second set of curly braces:
 (`myStruct arr = {{{item 1}, {item 2},}}`)
 
-Pointers and functions
-----------------------
+####Pointers and functions
 * Creating a pointer to a function call looks something like this: 
 `int (*ptr)();` where you make sure the return type is on the left and the 
 list of params are in the second set of brackets.
@@ -1333,8 +1330,7 @@ list of params are in the second set of brackets.
 * Vectors can be used as a stack because of their `push_back()`, `push()` and
 `pop()` methods.
 
-Command line arguments
-----------------------
+####Command line arguments
 * We pass two separate parameters to `main()`:
     * `int argc` is argument count, which is the number of arguments passed
     to the program. This will always be at least 1 because we're passing in 
@@ -1342,8 +1338,7 @@ Command line arguments
     * `char* argv[]` is argument values/vectors, which is the actual contents
     of what we're passing in. It's an array of c-strings of length argc
 
-Object Oriented Programming
----------------------------
+####Object Oriented Programming
 * While there are multiple ways to create a default constructor, including 
 treating it as any other function, with the definitions in the body, the best
 practice is to use a member initialisation list, which holds all the attribute
@@ -1422,8 +1417,7 @@ occuring using specific parameters. (ex: `Foo(char) = delete;`)
 * Note that using the `new` keyword also allows you to deep copy from one 
 variable to another.
 
-Object relations
-----------------
+####Object relations
 * Objects and complex data types are built up of various smaller fundamental
 data types using things like structs, classes, and enums. Arrays are also a
 part of this, as they allow you to create more complex groups of data.
@@ -1537,8 +1531,7 @@ need to be aware of what you're doing.
 class object into a child object.
     * If this fails, this will return a nullptr instead 
 
-template classes
-----------------
+####template classes
 * Just like functions, you can create a class template using different data 
 types
 * methods need their own templates as well.
@@ -1563,8 +1556,7 @@ There are no template parameters there that are being passed in, so the
 `template <>` angle brackets are empty, but they're still needed as this is
 a template method.
 
-Exceptions
-----------
+####Exceptions
 * One of the easiest ways to handle errors is via return codes, making the
 function return an integer
     * However, actually checking for them has a number of issues
@@ -1644,8 +1636,7 @@ triggers `std::terminate`, which can cause issues and is best avoided.
     and you can check against that bool to trigger code or not. THis is called
     an exception safety guarantee. 
 
-Smart pointers
---------------
+####Smart pointers
 * Smart pointers allow for memory management while using pointers and making 
 sure that they don't get let behind or dropped at the wrong times. 
 * A smart pointer is a class that takes in a pointer, and has a copy 
@@ -1718,7 +1709,7 @@ each other from being destroyed
     instead. (ex `std::weak_ptr<Class> ptr;`)
 
 
-###Strings and C-strings
+####Strings and C-strings
 * C-strings are a pain in the ass because you have to manage your own memory 
 * `std::string` is used for UTF-8 characters, and `std:wstring` (wide string) 
 is used for UTF-16 characters. 
@@ -1751,3 +1742,23 @@ two strings
 into the index location provided
 
 
+####Input and output
+* You can use `get()` to make sure that you take the whitespace from input as
+well - otherwise spaces, newlines etc will be ignored
+    * However this will just terminate the program at a newline, so you 
+    probably want `getline()` insteaed, as that'll turn a newline into a raw
+    character
+* You can control output formatting using flags and manipulators, which can 
+either be toggled on/off with `setf()` and `unsetf()`, or directly triggered
+when used in a `cout`
+    * One example of this is `boolalpha` 
+* You can use the `<sstream>` header and `std::stringstream` as buffer that you
+can write to or pull from that uses strings. 
+    * You can use these to convert to or from a string to other data types
+    * Or split a single string up using whitespace 
+* You can use the `ofstream` for writing **out** to a **file** - and the same
+for `ifstream` for reading in a file. 
+
+* When opening a file, there are a number of flags you can pass to `ofstream`
+or `ifstream` to decide on the mode that the file is opened in
+* You can also use `.close()` to make sure the file is explicitly closed.
