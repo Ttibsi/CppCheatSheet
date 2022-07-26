@@ -31,3 +31,9 @@ wildcard. This is probably the same in the rest of regex but I can't recall
 The `all` rule will trigger when you run `make` with no specifier. You should
 make sure that it depends on the right commands to run. Often, the build and 
 linker stages are in different commands in a Makefile. 
+
+## Cmake
+This is a "build system generator" that creates Makefiles for you. It doesn't
+come by default on macos but you can `brew install` it.
+
+
